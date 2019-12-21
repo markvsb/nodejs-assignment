@@ -1,0 +1,22 @@
+version: '3'
+services:
+  consul-server:
+    build: ./consul
+    command: ["agent", "-server", "-ui", "-node=server-1", "-bootstrap-expect=1", "-client=0.0.0.0"]
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+  nats:
+    image: "nats"
+    ports:
+      - "4222:4222"
+  mongo:
+    image: "mongo"
+    ports:
+      - "27017:27017"
+  data-consumer:
+    build: "./data-consumer"
+  rest-api:
+    build: "./rest-api"
+    ports:
+      - "8080:8080"

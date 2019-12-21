@@ -1,0 +1,13 @@
+{
+    "service": {
+        "name": "rest-api",
+        "tags": ["rest"],
+        "port": 8080,
+        "checks": [{
+            "http": "http://localhost:8080/healthz",
+            "method": "GET",
+            "interval": "10s",
+            "timeout": "1s"
+        }]
+    }
+}

@@ -76,8 +76,12 @@ const readOutLoud = (vehicleName) => {
 
 // This next few lines simulate Henk's (our favorite driver) shift
 console.log("Henk checks in on test-bus-1 starting his shift...")
-readOutLoud("test-bus-1")
-	.once("finish", () => {
-		console.log("henk is on the last stop and he is taking a cigarrete while waiting for his next trip")
-	})
+const run = () => {
+	readOutLoud("test-bus-1")
+		.once("finish", () => {
+			run()
+			console.log("henk is on the last stop and he is taking a cigarrete while waiting for his next trip")
+		})
+}
+run()
 // To make your presentation interesting maybe you can make henk drive again in reverse

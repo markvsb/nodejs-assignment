@@ -1,0 +1,7 @@
+{
+    "service": {
+        "name": "nats",
+        "tags": ["nats"],
+        "port": 4222
+    }
+}

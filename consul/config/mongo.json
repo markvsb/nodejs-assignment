@@ -1,0 +1,14 @@
+{
+    "service": {
+        "name": "mongo",
+        "tags": ["mongo"],
+        "port": 27017,
+        "checks": [{
+            "shell": "/bin/bash",
+            "args": ["echo", "db.runCommand(\"ping\").ok", "|", "mongo", "localhost:27017/test", "--quiet"],
+            "interval": "30s",
+            "timeout": "1s"
+        }]
+    },
+    "enable_script_checks" : true
+}
