@@ -1,0 +1,5 @@
+{
+    "enable_script_checks": true,
+	"client_addr": "0.0.0.0",
+	"disable_update_check": true
+}
