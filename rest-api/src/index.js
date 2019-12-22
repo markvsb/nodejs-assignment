@@ -1,5 +1,6 @@
 const restify = require('restify')
 const mongoClient = require('mongodb').MongoClient
+const config = require('../config')
 
 let db = null;
 
@@ -17,20 +18,28 @@ server.get('/healthz', function (req, res, next) {
 	return next()
 })
 
-server.get('/echo/:name', function (req, res, next) {
-	db.find()
-	res.send(req.params)
-	return next()
+server.get('/echo/:name', async (req, res, next) => {
+	//try {
+		const items = await db.collection('vehicle').find({}).sort({}).limit(50).toArray()
+		console.log(items)
+		res.send({
+			data: items
+		})
+		return next()
+	//} catch (e) {
+	//	console.log(e);
+	//	res.send(500, 'Server error')
+	//	return next()
+	//}
 })
 
-mongoClient.connect('mongodb://localhost:27017', function(err, client) {
+mongoClient.connect(config.mongo.url, function(err, client) {
 	if (err) {
 		console.log(err)
 	}
 
-	db = client;
-
-	server.listen(8080, function () {
+	db = client.db(config.mongo.db);
+	server.listen(3000, function () {
 		console.log('%s listening at %s', server.name, server.url);
 	})
 })

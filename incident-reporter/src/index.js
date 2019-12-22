@@ -1,6 +1,6 @@
 const nats = require('nats')
 const mongoClient = require('mongodb').MongoClient
-const config = require('./config')
+const config = require('../config')
 const incidentRules = require('./incidents')
 
 const checkIncidents = {
@@ -8,7 +8,7 @@ const checkIncidents = {
 	energy: incidentRules.power,
 };
 
-const natsConnection = nats.connect({ json: true })
+const natsConnection = nats.connect({ url: config.nats.url, json: true })
 
 const triggeredIncidents = stats => Object.entries(checkIncidents).filter(inc => inc[1].check(stats[inc[0]])) // fix
 

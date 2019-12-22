@@ -2,7 +2,7 @@ const nats = require('nats')
 const mongoClient = require('mongodb').MongoClient
 const config = require('../config')
 
-const natsConnection = nats.connect({ url: config.nats.url , json: true })
+const natsConnection = nats.connect({ url: config.nats.url, json: true })
 
 const prepareModel = (subject, msg) => ({ 
 	vehicle: subject,

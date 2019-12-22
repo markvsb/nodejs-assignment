@@ -1,7 +1,5 @@
 from node:13-alpine
 
-RUN apk add curl
-
 RUN mkdir -p /app
 
 WORKDIR /app
@@ -12,8 +10,6 @@ COPY --chown=node:node package-lock.json .
 RUN npm install --silent
 
 COPY --chown=node:node . .
-
-EXPOSE 8080
 
 ## run the application
 CMD ["node", "src/index.js"]

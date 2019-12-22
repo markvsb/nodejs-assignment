@@ -1,9 +1,9 @@
 module.exports = {
     nats: {
-        url: 'tls://localhost:4222',
+        url: 'nats://nats:4222',
     },
     mongo: {
-        url: 'mongodb://localhost:27017',
+        url: 'mongodb://mongo:27017',
         db: 'incidents',
     },
 }
