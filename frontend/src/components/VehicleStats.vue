@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import rp from 'request-promise-native';
 import Bar from './Bar/Bar.vue';
 import Map from './Map/Map.vue';
 import LineChart from './LineChart/LineChart.vue';
@@ -22,7 +23,21 @@ export default {
     LineChart,
     Speedometer
   },
-  props: {
+  data: () => {
+    return [{
+      energy: 0,
+      gps: 0,
+      odo: 0,
+      speed: 0,
+      soc: 0,
+    }]
+  },
+  mounted: async () => {
+    const a = await rp({
+      url: 'http://localhost:3000/vehicle/stats',
+    });
+    // eslint-disable-next-line
+    console.log(a);
   }
 }
 </script>

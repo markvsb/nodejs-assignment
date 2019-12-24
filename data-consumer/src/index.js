@@ -11,7 +11,6 @@ const prepareModel = (subject, msg) => ({
 
 const saveModel = (collection, message) => {
 	try {
-		console.log(message)
 		collection.insert(message)
 	} catch (e) {
 		
