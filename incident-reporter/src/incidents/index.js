@@ -1,4 +1,4 @@
 module.exports = {
-    power: require('./power'),
-    speed: require('./speed'),
+	power: require('./power'),
+	speed: require('./speed'),
 }

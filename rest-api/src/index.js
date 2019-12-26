@@ -1,43 +1,34 @@
-const restify = require('restify')
+const restify        = require('restify')
 const corsMiddleware = require('restify-cors-middleware')
-const db = require('./components/db')
+const mongo          = require('./components/mongo')
+const logger         = require('./components/logger')
+const controllers    = require('./controllers')
 
-const server = restify.createServer({
-	name: 'myapp',
-	version: '1.0.0'
+const app = restify.createServer({
+	version: '1.0.0',
 })
 
-const cors = corsMiddleware({  
-    origins: ["*"],
-    allowHeaders: ["Authorization"],
-    exposeHeaders: ["Authorization"]
-});
-
-server.pre(cors.preflight)
-server.use(cors.actual)
-server.use(restify.plugins.acceptParser(server.acceptable))
-server.use(restify.plugins.queryParser())
-server.use(restify.plugins.bodyParser())
-
-server.get('/healthz', function (req, res, next) {
-	res.send(201, {});
-	return next()
+const cors = corsMiddleware({
+	origins:       ['*'],
+	allowHeaders:  ['Authorization'],
+	exposeHeaders: ['Authorization'],
 })
 
-server.get('/vehicle/stats', async (req, res, next) => {
-	try {
-		const items = await db.collection('vehicle').find({}).sort({'time': -1}).limit(100).toArray()
-		res.send({
-			data: items
-		})
-		return next()
-	} catch (e) {
-		console.log(e);
-		res.send(500, 'Server error')
-		return next()
-	}
-})
+app.pre(cors.preflight)
+app.use(cors.actual)
+app.use(restify.plugins.acceptParser(app.acceptable))
+app.use(restify.plugins.queryParser())
+app.use(restify.plugins.bodyParser())
 
-server.listen(3000, function () {
-	console.log('%s listening at %s', server.name, server.url);
+app.get('/v1/vehicle/:name/status', controllers.vehicle.getStats)
+app.get('/v1/vehicle/:name/history', controllers.vehicle.getHistory)
+app.get('/v1/vehicles', controllers.vehicle.getList)
+app.get('/v1/healthz', controllers.success)
+
+mongo.then(client => {
+	app.listen(config.app.port, function () {
+		logger.info(`${app.name} listening at ${app.url}`)
+	})
+}).catch(err => {
+	logger.fatal('Unable to connect to MongoDB', err)
 })

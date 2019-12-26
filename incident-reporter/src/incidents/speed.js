@@ -1,4 +1,4 @@
 module.exports = {
-    name: "high-speed",
-    check: speed => speed > 60,
+	name:  'high-speed',
+	check: speed => speed > 50,
 }

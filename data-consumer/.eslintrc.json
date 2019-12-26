@@ -1,0 +1,35 @@
+{
+	"env": {
+		"browser": true,
+		"mocha": true
+	},
+	"rules": {
+		"align-assignments/align-assignments": "error",
+		"comma-dangle": ["error", "always-multiline"],
+		"key-spacing": [
+			"warn",
+			{
+				"mode": "minimum",
+				"align": "value"
+			}
+		],
+		"no-multi-spaces": 0,
+		"no-tabs": 0,
+		"semi": ["warn", "never"],
+		"indent": [
+			"error",
+			"tab",
+			{
+				"SwitchCase": 1
+			}
+		],
+		"max-len": [
+			"off",
+			{
+				"code": 120
+			}
+		]
+	},
+	"extends": ["standard"],
+	"plugins": ["align-assignments"]
+}

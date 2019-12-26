@@ -4,7 +4,7 @@
     <div id="el">
       <span id="needle"  v-bind:style="{ transform: 'rotate(' + (this.value || 0) + 'deg)' }"></span>
     </div>
-    <div class="display-value">66%</div>
+    <div class="display-value">{{ this.value }} km/h</div>
   </div>
 </template>
 
@@ -80,7 +80,7 @@ span {
   width: 90px;
   transform-origin: 100% 4px;
   transform: rotate(0deg);
-  transition: all 1s;
+  transition: all 0.2s;
 }
 
 #el:hover span {

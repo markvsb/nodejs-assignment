@@ -1,10 +1,21 @@
 <template>
   <div class="hello" style="width:500px;height:500px;">
-    <Map title="Battery percentage" value="55"></Map>
-    <Speedometer title="Battery percentage" value="55"></Speedometer>
-    <div style="position: relative;"><Bar title="Battery percentage" value="55"></Bar></div>
-    <div style="position: relative;"><LineChart></LineChart></div>
-    <div style="position: relative;"><LineChart></LineChart></div>
+    <Map title="Battery percentage" v-bind:geopoint="this.current.gps"></Map>
+    <Speedometer title="Speed" v-bind:value="this.current.speed"></Speedometer>
+    <div style="position: relative;"><Bar title="Battery percentage" v-bind:value="this.current.soc"></Bar></div>
+    <div style="position: relative;"><Bar title="speed" v-bind:value="this.current.speed"></Bar></div>
+    <div style="position: relative;"><LineChart
+      id="chart-energy"
+      v-bind:graph="this.pastSpeed"
+      label="Vehicle speed (kn/h)"
+      color="orange"
+    ></LineChart></div>
+    <div style="position: relative;"><LineChart
+      id="chart-soc"
+      v-bind:graph="this.pastSOC"
+      label="State of charge profile"
+      color="blue"
+    ></LineChart></div>
   </div>
 </template>
 
@@ -23,21 +34,68 @@ export default {
     LineChart,
     Speedometer
   },
-  data: () => {
-    return [{
-      energy: 0,
-      gps: 0,
-      odo: 0,
-      speed: 0,
-      soc: 0,
-    }]
+  data () { 
+    return {
+      pastData: [],
+      current: {
+        gps: [47.413226, -1.219482],
+        timestamp: null,
+        odo: null,
+        energy: null,
+        speed: null,
+        soc: null,
+      },
+    }
   },
-  mounted: async () => {
-    const a = await rp({
-      url: 'http://localhost:3000/vehicle/stats',
-    });
-    // eslint-disable-next-line
-    console.log(a);
+  computed: {
+    pastSpeed: function () {
+      return this.pastData.map((item) => ({
+        x: new Date(item.timestamp),
+        y: item.speed,
+      }))
+    },
+    pastSOC: function () {
+      return this.pastData.map((item) => ({
+        x: new Date(item.timestamp),
+        y: item.soc,
+      }))
+    }
+  },
+  mounted: async function () {
+    const self = this;
+    rp({
+      url: 'http://localhost:3000/v1/vehicle/test-bus-1/history',
+      json: true,
+    }).then((data) => {
+      self.pastData = data.data
+      const last = data.data[0] || {};
+      if (last) {
+        self.current.timestamp = last.timestamp
+        self.current.soc = last.soc
+        self.current.energy = last.energy
+        self.current.speed = last.speed
+        self.current.odo = last.odo
+        self.current.gps = Object.values(last.gps)
+      }
+    })
+    const ws = new WebSocket("ws://localhost:8000");
+    ws.onopen = () => {
+      this.connected = true;
+    };
+    ws.onmessage = broadcast => {
+      let last = JSON.parse(broadcast.data);
+      self.current = last
+      //self.pastData.push(last)
+      /*self.current.timestamp = last.timestamp
+      self.current.soc = last.soc
+      self.current.energy = last.energy
+      self.current.speed = last.speed
+      self.current.odo = last.odo
+      self.current.gps = last.gps*/
+    };
+    ws.onerror = error => {
+      console.log(`WebSocket error: ${error}`); //eslint-disable-line
+    };
   }
 }
 </script>

@@ -1,4 +1,4 @@
 module.exports = {
-    name: "low-power",
-    check: charge => charge < 20,
+	name:  'low-power',
+	check: charge => charge < 20,
 }
