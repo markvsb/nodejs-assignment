@@ -18,9 +18,11 @@ const prepareModel = (subject, msg) => ({
 const send = (msg, _, subject) => {
 	if (wss.clients.size > 0) {
 		wss.clients.forEach(function each (client) {
-			if (client.readyState === WebSocket.OPEN) {
+			if (client.readyState === webSocket.OPEN) {
 				client.send(JSON.stringify(prepareModel(subject.split('.').pop(), msg)), (err) => {
-					logger.warn('Unable to deliver message', err)
+					if (err) {
+						logger.warn('Unable to deliver message', err)
+					}
 				})
 			}
 		})

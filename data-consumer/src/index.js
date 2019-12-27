@@ -33,5 +33,5 @@ mongo.then(client => {
 		})
 	})
 }).catch(err => {
-	logger.fatal('Unable to connect to MongoDB', err)
+	logger.error('Unable to connect to MongoDB', err)
 })
