@@ -30,6 +30,9 @@ const getStats = async (req, res, next) => {
 const getHistory = async (req, res, next) => {
 	try {
 		const items = await vehicleService.getHistoryStats(req.params.name, null, { lean: true })
+		if (!items.length) {
+			res.send(404)
+		}
 		res.send({
 			data: items.map(item => ({
 				...item,

@@ -1,21 +1,17 @@
 <template>
   <div id="app" style="margin:25px auto 0; max-width:600px;">
-    <VehicleStats></VehicleStats>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import VehicleStats from './containers/VehicleStats.vue'
-
 export default {
-	name:       'app',
-	components: {
-		VehicleStats,
-	},
 }
 </script>
 
 <style>
+@import '~eva-icons/style/eva-icons.css';
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,8 +20,44 @@ export default {
   margin-top: 60px;
 }
 
+h1 {
+	font-size: 24px;
+	color:#000;
+	padding-left: 36px;
+	border-bottom: 1px solid #CCC;
+	padding-bottom: 10px;
+}
+
+h2 {
+	font-size: 14px;
+	color:#333;
+}
+
+.h1-with-icon > i {
+	font-size: 26px;
+	color: #555;
+	position: absolute;
+}
+
+.h1-with-icon > h1 {
+	padding-left:36px;
+}
+
+.h2-with-icon > i {
+	font-size: 16px;
+	color: green;
+	position: absolute;
+}
+.h2-with-icon > h2 {
+	padding-left:22px;
+}
+
+h3 {
+	margin: 40px 0 0;
+}
+
 .loading {
-	background: linear-gradient(90deg, rgb(150,150,150), rgb(200,200,200), rgb(150,150,150));
+	background: linear-gradient(115deg, rgb(250,250,250) 30%, rgb(200,200,200) 50%, rgb(250,250,250) 70%);
 	background-size: 400% 400%;
 	animation: animatedbg 1.5s ease infinite;
 	filter:grayscale(90%)

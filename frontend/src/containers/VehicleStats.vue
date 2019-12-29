@@ -1,28 +1,34 @@
 <template>
 	<div class="main">
+		<div style="float:right;margin-top:6px;">
+			<NetworkStatus v-bind:status="this.networkStatus"></NetworkStatus>
+		</div>
+		<Header v-bind:title="(this.$route.params.name || 'Loading...')" icon="eva-car-outline"></Header>
 		<div class="current-status">
 			<div style="width:40%;">
 				<Map v-bind:geopoint="this.current.gps"></Map>
 			</div>
 			<div style="width:55%;">
-				<div><Bar title="Battery percentage" metric="%" v-bind:value="this.current.soc"></Bar></div>
-				<div class="margin-default"><Bar title="Speed" metric="km/h" v-bind:value="this.current.speed"></Bar></div>
+				<div><Bar title="Battery percentage" icon="eva-charging-outline" metric="%" v-bind:value="this.current.soc"></Bar></div>
+				<div class="margin-default"><Bar title="Speed" icon="eva-activity-outline" metric="km/h" v-bind:value="this.current.speed"></Bar></div>
 				<div class="margin-default">
-					<div class="col-half"><TitledValue title="Energy" metric="kW" v-bind:value="this.current.energy"></TitledValue></div>
-					<div class="col-half"><TitledValue title="Odometer" metric="km" v-bind:value="this.current.odo"></TitledValue></div>
+					<div class="col-half"><TitledValue title="Energy" icon="eva-flash-outline" metric="kW" v-bind:value="this.current.energy"></TitledValue></div>
+					<div class="col-half"><TitledValue title="Odometer" icon="eva-trending-up-outline" metric="km" v-bind:value="this.current.odo"></TitledValue></div>
 				</div>
 			</div>
 		</div>
 		<div class="graph margin-default"><LineChart
 			id="chart-energy"
 			title="Speed profile"
+			icon="eva-activity-outline"
 			v-bind:graph="this.pastSpeed"
-			label="Vehicle speed (km/h)"
+			label="le speed (km/h)"
 			color="orange"
 		></LineChart></div>
 		<div class="graph margin-default"><LineChart
 			id="chart-soc"
 			title="State of charge profile"
+			icon="eva-battery-outline"
 			v-bind:graph="this.pastSOC"
 			label="State of charge (%)"
 			color="blue"
@@ -31,25 +37,35 @@
 </template>
 
 <script>
-import rp from 'request-promise-native'
-import Bar from '../components/Bar/Bar.vue'
-import Map from '../components/Map/Map.vue'
-import TitledValue from '../components/TitledValue/TitledValue.vue'
-import LineChart from '../components/LineChart/LineChart.vue'
+import { getHistory } from '../service/api'
+import { init } from '../service/websocket'
+import Bar from '../components/BaseBar.vue'
+import Header from '../components/BaseHeader.vue'
+import NetworkStatus from '../components/NetworkStatus.vue'
+import Map from '../components/BaseMap.vue'
+import TitledValue from '../components/BaseTitledValue.vue'
+import LineChart from '../components/BaseLineChart.vue'
+
+const reconnectTimeout = 3000
 
 export default {
-	name:       'VehicleStats',
+	name:       'leStats',
 	components: {
 		Bar,
+		Header,
 		Map,
 		LineChart,
+		NetworkStatus,
 		TitledValue,
 	},
 	data () {
 		return {
-			pastData: [],
-			current:  {
-				gps:       [0, 0],
+			name:          this.$route.params.name,
+			websocket:     null,
+			networkStatus: false,
+			pastData:      [],
+			current:       {
+				gps:       null,
 				timestamp: null,
 				odo:       null,
 				energy:    null,
@@ -72,42 +88,63 @@ export default {
 			}))
 		},
 	},
-	mounted: async function () {
-		const self = this
-		rp({
-			url:  'http://localhost:3000/v1/vehicle/test-bus-1/history',
-			json: true,
-		}).then((data) => {
-			self.pastData = data.data
-			const last    = data.data[0] || {}
-			if (last) {
-				self.current.timestamp = last.timestamp
-				self.current.soc       = last.soc
-				self.current.energy    = last.energy
-				self.current.speed     = last.speed
-				self.current.odo       = last.odo
-				self.current.gps       = Object.values(last.gps)
+	methods: {
+		loadHistory: function (name) {
+			return getHistory(name).then((data) => {
+				this.pastData = data.data
+				const last    = data.data[0] || {}
+				if (last) {
+					this.fillCurrent(last)
+				}
+			}).catch((err) => {
+				if (err.statusCode === 404) {
+					this.$router.push({ name: 'vehicles' })
+				} else {
+					setTimeout(() => {
+						this.loadHistory(name)
+					}, reconnectTimeout)
+				}
+			})
+		},
+		initWebsocket: function () {
+			this.websocket           = init()
+			this.websocket.onmessage = broadcast => {
+				this.fillCurrent(JSON.parse(broadcast.data))
 			}
-		})
-		const ws  = new WebSocket('ws://localhost:8000')
-		ws.onopen = () => {
-			this.connected = true
-		}
-		ws.onmessage = broadcast => {
-			const last   = JSON.parse(broadcast.data)
-			self.current = last
-		}
-		ws.onerror = error => {
-			console.log(`WebSocket error: ${error}`); //eslint-disable-line
-		}
+			this.websocket.onopen    = () => {
+				this.networkStatus = true
+			}
+			this.websocket.onerror = () => {
+				if (this.websocket) {
+					this.websocket.close()
+				}
+			}
+			this.websocket.onclose = () => {
+				this.networkStatus = false
+				setTimeout(() => {
+					this.websocket = this.initWebsocket()
+				}, reconnectTimeout)
+			}
+		},
+		fillCurrent: function (last) {
+			if (last.name === this.$route.params.name) {
+				this.current.timestamp = last.timestamp
+				this.current.soc       = last.soc
+				this.current.energy    = last.energy
+				this.current.speed     = last.speed
+				this.current.odo       = last.odo
+				this.current.gps       = Array.isArray(last.gps) ? last.gps : Object.values(last.gps)
+			}
+		},
+	},
+	mounted: function () {
+		this.loadHistory(this.$route.params.name)
+		this.initWebsocket()
 	},
 }
 </script>
 
 <style scoped>
-h3 {
-	margin: 40px 0 0;
-}
 .main {
 	width:600px;
 	height:500px;

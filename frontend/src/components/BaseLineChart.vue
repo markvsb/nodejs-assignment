@@ -1,11 +1,16 @@
 <template>
-	<div style="height: 200px;"><canvas ref="myLine"></canvas></div>
+	<div>
+		<div class="h2-with-icon"><i class="eva" v-bind:class="this.icon"></i><h2>{{ this.title }}</h2></div>
+		<div style="height: 200px;">
+			<canvas ref="myLine"></canvas>
+		</div>
+	</div>
 </template>
 
 <script>
 import Chart from 'chart.js'
 export default {
-	props: ['chartId', 'graph', 'label', 'color'],
+	props: ['chartId', 'title', 'icon', 'graph', 'label', 'color'],
 	data () {
 		return {
 			chart: null,
@@ -62,6 +67,12 @@ export default {
 								},
 							},
 						],
+					},
+					legend: {
+						display: false,
+					},
+					tooltips: {
+						enabled: false,
 					},
 					responsive:          true,
 					maintainAspectRatio: false,

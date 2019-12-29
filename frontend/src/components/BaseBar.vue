@@ -1,9 +1,11 @@
 <template>
 <div>
-	<h2>{{ this.title }}</h2>
+	<div class="h2-with-icon"><i class="eva" v-bind:class="this.icon"></i><h2>{{ this.title }}</h2></div>
 	<div class="loading" v-if="this.value === null"></div>
 	<div v-else class="container">
-		<div class="progress" v-bind:style="{ width: (this.value) + '%' }"><span>{{ this.value + '&nbsp;' + this.metric }}</span></div>
+		<div class="progress" v-bind:style="{ width: (this.value) + '%' }">
+      <span>{{ this.value + '&nbsp;' + this.metric }}</span>
+    </div>
 	</div>
 </div>
 </template>
@@ -11,16 +13,11 @@
 <script>
 export default {
 	name:  'Bar',
-	props: ['value', 'metric', 'title'],
-	mounted () {},
+	props: ['value', 'icon', 'metric', 'title'],
 }
 </script>
 
 <style scoped>
-h2 {
-  font-size: 12px;
-  color:#666;
-}
 .loading {
 	height:24px;
 }
@@ -38,12 +35,13 @@ h2 {
   background: linear-gradient(#00ca00, #00b700);
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.15), 0 -2px 0 0 rgba(0,0,0,0.15) inset;
   height: 24px;
-  text-shadow:0 1px 0 rgba(0,0,0,0.4);
+  text-shadow:0 1px 2px rgba(0,0,0,0.4);
   font-size: 14px;
   font-weight: bold;
   line-height: 24px;
 }
 .container .progress span {
   white-space: nowrap;
+  padding:0 4px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template lang="html">
-	<div style="height:240px;width:100%">
+	<div style="height:240px;width:100%" v-bind:class="[this.geopoint ? '' : 'loading']">
 		<l-map ref="myMap" :zoom="zoom" :center="center">
 			<l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
 			<l-marker ref="myMarker" :lat-lng="marker.position" :draggable=true></l-marker>
@@ -30,11 +30,14 @@ export default {
 	data () {
 		return {
 			zoom:        14,
-			center:      this.geopoint,
+			center:      this.geopoint || [0, 0],
 			url:         'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+			attribution: '&copy; OpenStreetMap',
 			marker:      {
-				position: { lat: this.geopoint[0], lng: this.geopoint[1] },
+				position: {
+					lat: this.geopoint ? this.geopoint[0] : 0,
+					lng: this.geopoint ? this.geopoint[1] : 0,
+				},
 			},
 		}
 	},
@@ -47,6 +50,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
     @import "~leaflet/dist/leaflet.css";
+
+	.loading .leaflet-container {
+		opacity:0.3;
+	}
+
+	.loading .leaflet-control-container {
+		display: none;
+	}
 </style>
