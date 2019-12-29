@@ -28,7 +28,7 @@
 			{
 				"code": 120
 			}
-		],
+		]
 	},
 	"extends": ["standard"],
 	"plugins": ["align-assignments"]

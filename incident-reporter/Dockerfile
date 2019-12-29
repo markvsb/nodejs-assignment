@@ -1,4 +1,4 @@
-from node:13-alpine
+FROM node:13-alpine
 
 RUN mkdir -p /app
 
@@ -12,4 +12,4 @@ RUN npm install --silent
 COPY --chown=node:node . .
 
 ## run the application
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]

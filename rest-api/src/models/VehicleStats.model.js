@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const schema = new mongoose.Schema({
 	timestamp: Date,
 	name:      {
-		type: String,
+		type:  String,
 		index: true,
 	},
 	speed:     Number,
@@ -15,7 +15,5 @@ const schema = new mongoose.Schema({
 	odo: Number,
 	soc: Number,
 })
-
-
 
 module.exports = mongoose.model('vehicleStats', schema, 'vehicleStats')

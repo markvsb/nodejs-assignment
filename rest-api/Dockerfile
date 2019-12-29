@@ -1,4 +1,4 @@
-from node:13-alpine
+FROM node:13-alpine
 
 RUN apk add curl
 
@@ -16,4 +16,4 @@ COPY --chown=node:node . .
 EXPOSE 8080
 
 ## run the application
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]

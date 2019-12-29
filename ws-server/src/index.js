@@ -34,7 +34,6 @@ const send = (msg, _, subject) => {
 const natsConnection = nats.connect({ url: config.nats.url, json: true })
 
 const wss = new webSocket.Server({
-	host: config.websocket.host,
 	port: config.websocket.port,
 })
 

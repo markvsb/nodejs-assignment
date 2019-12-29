@@ -1,4 +1,4 @@
-const controllers = require('./controllers')
+const controllers = require('../controllers')
 
 module.exports = (app) => {
 	app.get('/v1/vehicle/:name/status', controllers.vehicle.getStats)

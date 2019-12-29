@@ -7,20 +7,28 @@ const incidentRules = require('./incidents')
 
 const NATS_SUBJECT = 'vehicle.*'
 
-const incidents = {
-	speed:  incidentRules.speed,
-	energy: incidentRules.power,
-}
+const incidents = [
+	{
+		value: 'speed',
+		name:  incidentRules.speed.name,
+		rule:  incidentRules.speed,
+	},
+	{
+		value: 'soc',
+		name:  incidentRules.charge.name,
+		rule:  incidentRules.charge,
+	},
+]
 
-const checkIncidents = stats => Object.entries(incidents).filter(inc => inc[1].check(stats[inc[0]])) // fix
+const checkIncidents = stats => incidents.filter(inc => inc.rule.check(inc.value ? stats[inc.value] : stats))
 
-const createReport = (stats, triggeredIncidents) => {
+const createReport = (msg, subject, triggeredIncidents) => {
 	const [lat, long] = msg.gps.split('|')
 	const report      = new Report()
 	report.name       = subject.split('.').pop()
 	report.stats      = {
 		...msg,
-		gps: { lat, long },
+		gps:       { lat, long },
 		timestamp: new Date(msg.time),
 	}
 	report.incidents  = triggeredIncidents.map(alert => alert.name)
@@ -37,7 +45,7 @@ mongo.then(client => {
 	natsConnection.subscribe(NATS_SUBJECT, (msg, _, subject) => {
 		const triggeredIncidents = checkIncidents(msg)
 		if (triggeredIncidents.length > 0) {
-			createReport(msg, triggeredIncidents)
+			createReport(msg, subject, triggeredIncidents)
 		}
 	})
 }).catch(err => {

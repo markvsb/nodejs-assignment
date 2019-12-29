@@ -1,8 +1,8 @@
 export default {
 	api: {
-		url: 'http://localhost:3000' || process.env.API_URL,
+		url: process.env.VUE_APP_API_URL || 'http://localhost:3000',
 	},
 	websocket: {
-		url: 'ws://localhost:8000' || process.env.WEBSOCKET_URL,
+		url: process.env.VUE_APP_WEBSOCKET_URL || 'ws://localhost:8000',
 	},
 }
