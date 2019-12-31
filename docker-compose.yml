@@ -5,6 +5,8 @@ services:
     container_name: nats
     image: "nats"
     restart: always
+    ports:
+      - "4222:4222"
   mongo:
     container_name: mongo
     image: mongo
@@ -19,7 +21,7 @@ services:
       - "8080:8080"
     links: 
       - rest-api
-      - ws-server
+      - ws-api
   data-consumer:
     container_name: "data-consumer"
     build: "./data-consumer"
@@ -59,13 +61,13 @@ services:
     depends_on: 
       - nats
       - mongo
-  ws-server:
-    container_name: "ws-server"
-    build: "./ws-server"
+  ws-api:
+    container_name: "ws-api"
+    build: "./ws-api"
     restart: always
     ports:
       - "8000:8000"
-    environment: 
+    environment:
       - NATS_URL=nats://nats:4222
     depends_on: 
       - nats

@@ -23,7 +23,7 @@
 			icon="eva-activity-outline"
 			v-bind:graph="this.pastSpeed"
 			label="le speed (km/h)"
-			color="orange"
+			color="#6cc918"
 		></LineChart></div>
 		<div class="graph margin-default"><LineChart
 			id="chart-soc"
@@ -31,7 +31,7 @@
 			icon="eva-battery-outline"
 			v-bind:graph="this.pastSOC"
 			label="State of charge (%)"
-			color="blue"
+			color="#539c10"
 		></LineChart></div>
 	</div>
 </template>
@@ -113,6 +113,14 @@ export default {
 			}
 			this.websocket.onopen    = () => {
 				this.networkStatus = true
+				if (this.websocket) {
+					this.websocket.send(JSON.stringify({
+						method: 'subscribe',
+						data:   {
+							name: 'test-bus-1',
+						},
+					}))
+				}
 			}
 			this.websocket.onerror = () => {
 				if (this.websocket) {
@@ -146,8 +154,7 @@ export default {
 
 <style scoped>
 .main {
-	width:600px;
-	height:500px;
+	max-width:600px;
 }
 .current-status {
 	display:inline-block;
@@ -168,9 +175,6 @@ export default {
 }
 .graph {
 	position: relative;
-}
-.margin-default {
-	margin-top:20px;
 }
 a {
 	color: #42b983;

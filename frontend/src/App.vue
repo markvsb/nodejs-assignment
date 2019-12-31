@@ -12,12 +12,22 @@ export default {
 <style>
 @import '~eva-icons/style/eva-icons.css';
 
+html, body {
+	padding: 0;
+	margin: 0;
+	background: #F3F3F3;
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
+	font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #2c3e50;
+	margin-top: 60px;
+	padding:10px 25px;
+	background: #FFF;
+	box-shadow: 0 5px 10px -5px rgba(0,0,0,0.5);
+	border-radius: 2px;
 }
 
 h1 {
@@ -54,6 +64,10 @@ h2 {
 
 h3 {
 	margin: 40px 0 0;
+}
+
+.margin-default {
+	margin-top:20px;
 }
 
 .loading {
