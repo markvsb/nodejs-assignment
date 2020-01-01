@@ -38,7 +38,7 @@
 
 <script>
 import { getHistory } from '../service/api'
-import { init } from '../service/websocket'
+import { createEmitter, wsConnect } from '../service/websocket'
 import Bar from '../components/BaseBar.vue'
 import Header from '../components/BaseHeader.vue'
 import NetworkStatus from '../components/NetworkStatus.vue'
@@ -46,7 +46,7 @@ import Map from '../components/BaseMap.vue'
 import TitledValue from '../components/BaseTitledValue.vue'
 import LineChart from '../components/BaseLineChart.vue'
 
-const reconnectTimeout = 3000
+const refetchTimeout = 3000
 
 export default {
 	name:       'leStats',
@@ -102,37 +102,28 @@ export default {
 				} else {
 					setTimeout(() => {
 						this.loadHistory(name)
-					}, reconnectTimeout)
+					}, refetchTimeout)
 				}
 			})
 		},
 		initWebsocket: function () {
-			this.websocket           = init()
-			this.websocket.onmessage = broadcast => {
-				this.fillCurrent(JSON.parse(broadcast.data))
-			}
-			this.websocket.onopen    = () => {
+			const wsEmitter = createEmitter()
+			wsEmitter.on('open', (ws) => {
 				this.networkStatus = true
-				if (this.websocket) {
-					this.websocket.send(JSON.stringify({
-						method: 'subscribe',
-						data:   {
-							name: 'test-bus-1',
-						},
-					}))
-				}
-			}
-			this.websocket.onerror = () => {
-				if (this.websocket) {
-					this.websocket.close()
-				}
-			}
-			this.websocket.onclose = () => {
+				ws.send(JSON.stringify({
+					method: 'subscribe',
+					data:   {
+						name: 'test-bus-1',
+					},
+				}))
+			})
+			wsEmitter.on('message', (ws, broadcast) => {
+				this.fillCurrent(JSON.parse(broadcast.data))
+			})
+			wsEmitter.on('error', () => {
 				this.networkStatus = false
-				setTimeout(() => {
-					this.websocket = this.initWebsocket()
-				}, reconnectTimeout)
-			}
+			})
+			this.websocket = wsConnect(wsEmitter)
 		},
 		fillCurrent: function (last) {
 			if (last.name === this.$route.params.name) {

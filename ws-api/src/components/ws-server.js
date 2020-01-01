@@ -54,7 +54,7 @@ const initWebSocketServer = (cfg, onNewMessage, onDisconnect) => {
 		ws.isAlive = true
 		ws.on('pong', onPong)
 		ws.on('message', (msg) => onMessage(ws, msg, onNewMessage))
-		ws.on('close', onDisconnect)
+		ws.on('close', () => onDisconnect(ws))
 	})
 
 	wss.on('error', () => {
