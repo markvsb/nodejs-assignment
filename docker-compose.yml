@@ -29,6 +29,7 @@ services:
     environment: 
       - NATS_URL=nats://nats:4222
       - MONGO_DSN=mongodb://mongo:27017/statistics
+      - LOG_LEVEL=info
     links: 
       - nats
       - mongo
@@ -47,6 +48,7 @@ services:
     environment: 
       - NATS_URL=nats://nats:4222
       - MONGO_DSN=mongodb://mongo:27017/incidents
+      - LOG_LEVEL=info
     links: 
       - nats
       - mongo
@@ -56,6 +58,7 @@ services:
     restart: always
     environment:
       - MONGO_DSN=mongodb://mongo:27017/statistics
+      - LOG_LEVEL=info
     ports:
       - "3000:3000"
     depends_on: 
@@ -69,5 +72,6 @@ services:
       - "8000:8000"
     environment:
       - NATS_URL=nats://nats:4222
+      - LOG_LEVEL=info
     depends_on: 
       - nats
