@@ -28,7 +28,7 @@ const unsubscribeFromChannel = (ws, channel = null) => {
 
 const unsubscribe = (ws, channel = null) => {
 	if (channel) {
-		return unsubscribeFromChannel(ws, channel);
+		return unsubscribeFromChannel(ws, channel)
 	}
 
 	Object.keys(subscriptions).forEach((e) => {

@@ -1,11 +1,11 @@
-const webSocket  = require('ws')
-const uuid       = require('uuid')
-const logger     = require('../components/logger')
+const webSocket = require('ws')
+const uuid      = require('uuid')
+const logger    = require('../components/logger')
 
-let pongInterval = null; 
+let pongInterval = null
 
 /**
- * @param {String} msg 
+ * @param {String} msg
  */
 const parseMessage = (msg) => {
 	try {
@@ -28,9 +28,9 @@ const onPong = function () {
 }
 
 /**
- * @param {WebSocket} ws 
- * @param {String} msg 
- * @param {Function} callback 
+ * @param {WebSocket} ws
+ * @param {String} msg
+ * @param {Function} callback
  */
 const onMessage = (ws, msg, callback) => {
 	const message = parseMessage(msg)
@@ -42,9 +42,9 @@ const onMessage = (ws, msg, callback) => {
 }
 
 /**
- * @param {Object} cfg 
- * @param {Function} onNewMessage 
- * @param {Function} onDisconnect 
+ * @param {Object} cfg
+ * @param {Function} onNewMessage
+ * @param {Function} onDisconnect
  */
 const initWebSocketServer = (cfg, onNewMessage, onDisconnect) => {
 	const wss = new webSocket.Server({ port: cfg.port })
@@ -58,8 +58,8 @@ const initWebSocketServer = (cfg, onNewMessage, onDisconnect) => {
 	})
 
 	wss.on('error', () => {
-		clearInterval(pongInterval);
-	});
+		clearInterval(pongInterval)
+	})
 
 	pongInterval = setInterval(() => {
 		wss.clients.forEach((ws) => {

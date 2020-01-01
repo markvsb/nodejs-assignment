@@ -1,6 +1,0 @@
-{
-    "service": {
-        "name": "data-consumer",
-        "tags": ["data-consumer"]
-    }
-}

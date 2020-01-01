@@ -1,10 +1,9 @@
-const assert = require('chai').assert
-const rewire              = require('rewire')
+const assert    = require('chai').assert
+const rewire    = require('rewire')
 const WebSocket = require('ws')
-const wsServer     = rewire('../../src/components/ws-server')
+const wsServer  = rewire('../../src/components/ws-server')
 
 describe('WebSocket server', () => {
-
 	before(function () {
 		this.wsServer = null
 	})
@@ -12,14 +11,14 @@ describe('WebSocket server', () => {
 	afterEach(function () {
 		if (this.wsServer) {
 			this.wsServer.clients.forEach((socket) => {
-				socket.close();
+				socket.close()
 				process.nextTick(() => {
 					if ([socket.OPEN, socket.CLOSING].includes(socket.readyState)) {
 						// Socket still hangs, hard close
-						socket.terminate();
+						socket.terminate()
 					}
-				});
-			});
+				})
+			})
 		}
 		clearInterval(wsServer.__get__('pongInterval'))
 		if (this.wsServer) {
@@ -33,9 +32,9 @@ describe('WebSocket server', () => {
 			() => {},
 			() => {},
 		)
-		
+
 		const client = new WebSocket('ws://localhost:65001')
-		await new Promise((resolve) => { client.on('open', () => resolve()) });
+		await new Promise((resolve) => { client.on('open', () => resolve()) })
 		const ws = this.wsServer.clients.values().next().value
 
 		assert.isNotNull(ws.id)
@@ -43,12 +42,11 @@ describe('WebSocket server', () => {
 	})
 
 	it('Should trigger action on correct message', async function () {
-		const a = await new Promise((resolve) => {
+		const executed = await new Promise((resolve) => {
 			this.wsServer = wsServer.initWebSocketServer(
 				{ port: 65001 },
 				() => {
-					executed = true;
-					resolve(true);
+					resolve(true)
 				},
 				() => {},
 			)
@@ -57,11 +55,11 @@ describe('WebSocket server', () => {
 			client.on('open', () => {
 				client.send(JSON.stringify({
 					method: 'a',
-					data: [],
+					data:   [],
 				}))
-			});
-		});
+			})
+		})
 
-		assert.isTrue(a)
+		assert.isTrue(executed)
 	})
 })
