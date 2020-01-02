@@ -39,6 +39,7 @@ services:
     restart: always
     environment: 
       - NATS_URL=nats://nats:4222
+      - REALTIME=false
     links: 
       - nats
   incident-reporter:

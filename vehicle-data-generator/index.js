@@ -62,7 +62,13 @@ const readOutLoud = (vehicleName) => {
 					// The first parameter on this function is topics in which data will be broadcasted
 					// it also includes the vehicle name to seggregate data between different vehicle
 
-					nats.publish(`vehicle.${vehicleName}`, obj, cb)
+					nats.publish(
+						`vehicle.${vehicleName}`,
+						process.env.REALTIME === "true"
+							? { ...obj, time: (new Date).getTime() }
+							: obj,
+						cb
+					)
 
 				}, Math.ceil(Math.random() * 150))
 			}
