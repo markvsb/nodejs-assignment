@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import config from '../config'
 
-const RECONNECT_AFTER_MS = 1000
+const RECONNECT_AFTER_MS = 3000
 
 export const createEmitter = () => new EventEmitter()
 

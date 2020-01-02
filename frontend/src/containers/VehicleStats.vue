@@ -118,7 +118,13 @@ export default {
 				}))
 			})
 			wsEmitter.on('message', (ws, broadcast) => {
-				this.fillCurrent(JSON.parse(broadcast.data))
+				const data = JSON.parse(broadcast.data)
+				if (!this.current ||
+					!this.current.timestamp ||
+					data.timestamp > this.current.timestamp
+				) {
+					this.fillCurrent(data)
+				}
 			})
 			wsEmitter.on('error', () => {
 				this.networkStatus = false
