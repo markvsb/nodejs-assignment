@@ -21,7 +21,7 @@ const NATS = require("nats")
 
 // NATS connection happens here
 // After a connection is made you can start broadcasting messages (take a look at nats.publish())
-const nats = NATS.connect({json: true})
+const nats = NATS.connect({ url: process.env.NATS_URL || 'nats://localhost:4222', json: true})
 
 // This function will start reading out csv data from file and publish it on nats
 const readOutLoud = (vehicleName) => {
@@ -76,8 +76,12 @@ const readOutLoud = (vehicleName) => {
 
 // This next few lines simulate Henk's (our favorite driver) shift
 console.log("Henk checks in on test-bus-1 starting his shift...")
-readOutLoud("test-bus-1")
-	.once("finish", () => {
-		console.log("henk is on the last stop and he is taking a cigarrete while waiting for his next trip")
-	})
+const run = () => {
+	readOutLoud("test-bus-1")
+		.once("finish", () => {
+			run()
+			console.log("henk is on the last stop and he is taking a cigarrete while waiting for his next trip")
+		})
+}
+run()
 // To make your presentation interesting maybe you can make henk drive again in reverse

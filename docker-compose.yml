@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  nats:
+    container_name: nats
+    image: "nats"
+    restart: always
+    ports:
+      - "4222:4222"
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+  frontend:
+    container_name: "frontend"
+    build: "./frontend"
+    restart: always
+    ports:
+      - "8080:8080"
+    links: 
+      - rest-api
+      - ws-api
+  data-consumer:
+    container_name: "data-consumer"
+    build: "./data-consumer"
+    restart: always
+    environment: 
+      - NATS_URL=nats://nats:4222
+      - MONGO_DSN=mongodb://mongo:27017/statistics
+      - LOG_LEVEL=info
+    links: 
+      - nats
+      - mongo
+  vehicle-data-generator:
+    container_name: "vehicle-data-generator"
+    build: "./vehicle-data-generator"
+    restart: always
+    environment: 
+      - NATS_URL=nats://nats:4222
+    links: 
+      - nats
+  incident-reporter:
+    container_name: "incident-reporter"
+    build: "./incident-reporter"
+    restart: always
+    environment: 
+      - NATS_URL=nats://nats:4222
+      - MONGO_DSN=mongodb://mongo:27017/incidents
+      - LOG_LEVEL=info
+    links: 
+      - nats
+      - mongo
+  rest-api:
+    container_name: "rest-api"
+    build: "./rest-api"
+    restart: always
+    environment:
+      - MONGO_DSN=mongodb://mongo:27017/statistics
+      - LOG_LEVEL=info
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - nats
+      - mongo
+  ws-api:
+    container_name: "ws-api"
+    build: "./ws-api"
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - NATS_URL=nats://nats:4222
+      - LOG_LEVEL=info
+    depends_on: 
+      - nats
