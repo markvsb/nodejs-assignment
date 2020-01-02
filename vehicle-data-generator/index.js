@@ -20,8 +20,8 @@ const NATS = require("nats")
 // At this point, do not forget to run NATS server!
 
 // NATS connection happens here
-const nats = NATS.connect({ url: process.env.NATS_URL || 'nats://localhost:4222', json: true})
 // After a connection is made you can start broadcasting messages (take a look at nats.publish())
+const nats = NATS.connect({ url: process.env.NATS_URL || 'nats://localhost:4222', json: true})
 
 // This function will start reading out csv data from file and publish it on nats
 const readOutLoud = (vehicleName) => {
