@@ -34,11 +34,9 @@ const onPong = function () {
  */
 const onMessage = (ws, msg, callback) => {
 	const message = parseMessage(msg)
-	if (!message) {
-		return null
+	if (message) {
+		callback(ws, message)
 	}
-
-	callback(ws, message)
 }
 
 /**

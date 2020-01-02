@@ -1,7 +1,8 @@
-const assert    = require('chai').assert
-const rewire    = require('rewire')
-const WebSocket = require('ws')
-const wsServer  = rewire('../../src/components/ws-server')
+const { assert } = require('chai')
+const rewire     = require('rewire')
+const WebSocket  = require('ws')
+
+const wsServer = rewire('../../src/components/ws-server')
 
 describe('WebSocket server', () => {
 	before(function () {

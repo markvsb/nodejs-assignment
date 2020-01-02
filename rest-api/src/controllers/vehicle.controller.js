@@ -47,7 +47,7 @@ const getHistory = async (req, res, next) => {
 		}
 
 		res.send({
-			data: items.map(item => ({
+			data: items.map((item) => ({
 				...item,
 				timestamp: item.timestamp,
 			})),

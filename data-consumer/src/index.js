@@ -1,8 +1,8 @@
-const nats                   = require('nats')
-const mongo                  = require('./components/mongo')
-const logger                 = require('./components/logger')
-const config                 = require('./config')
-const createFromSimpleObject = require('./service/vehicle').createFromSimpleObject
+const nats                       = require('nats')
+const mongo                      = require('./components/mongo')
+const logger                     = require('./components/logger')
+const config                     = require('./config')
+const { createFromSimpleObject } = require('./service/vehicle')
 
 const NATS_SUBJECT = 'vehicle.*'
 
@@ -16,6 +16,6 @@ mongo.then(() => {
 			logger.warn('Unable to save object', err)
 		})
 	})
-}).catch(err => {
+}).catch((err) => {
 	logger.error('Unable to connect to MongoDB', err)
 })

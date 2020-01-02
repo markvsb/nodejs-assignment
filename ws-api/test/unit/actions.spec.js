@@ -1,8 +1,8 @@
-const assert  = require('chai').assert
-const actions = require('../../src/actions')
+const { assert } = require('chai')
+const actions    = require('../../src/actions')
 
 describe('Actions', () => {
-	it('Should subscribe on message method', async function () {
+	it('Should subscribe on message method', async () => {
 		const subscribed = actions.exec({
 			id: 1,
 		}, {
@@ -15,7 +15,7 @@ describe('Actions', () => {
 		assert.isTrue(subscribed)
 	})
 
-	it('Should not subscribe double', async function () {
+	it('Should not subscribe double', async () => {
 		actions.exec({
 			id: 1,
 		}, {
@@ -37,7 +37,7 @@ describe('Actions', () => {
 		assert.isFalse(subscribed)
 	})
 
-	it('Should not fail on unknown method', async function () {
+	it('Should not fail on unknown method', async () => {
 		actions.exec({}, {
 			method: 'unknown',
 			data:   {},

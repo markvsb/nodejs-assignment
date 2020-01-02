@@ -1,9 +1,10 @@
-const assert              = require('chai').assert
-const rewire              = require('rewire')
+const { assert } = require('chai')
+const rewire     = require('rewire')
+
 const subscriptionService = rewire('../../src/services/subscription')
 
 describe('Subscribe actions', () => {
-	it('Should subscribe', async function () {
+	it('Should subscribe', async () => {
 		const subscribed = subscriptionService.subscribe({
 			id: 1,
 		}, 'my-channel')
@@ -11,7 +12,7 @@ describe('Subscribe actions', () => {
 		assert.isTrue(subscribed)
 	})
 
-	it('Should support multi-subscription', async function () {
+	it('Should support multi-subscription', async () => {
 		subscriptionService.subscribe({
 			id: 1,
 		}, 'my-channel')
@@ -23,7 +24,7 @@ describe('Subscribe actions', () => {
 		assert.isTrue(subscribed)
 	})
 
-	it('fail to subscribe double', async function () {
+	it('fail to subscribe double', async () => {
 		subscriptionService.subscribe({
 			id: 1,
 		}, 'my-channel')
@@ -41,7 +42,7 @@ describe('Unsubscribe actions', () => {
 		subscriptionService.__set__('subscriptions', {})
 	})
 
-	it('Should unsubscribe', async function () {
+	it('Should unsubscribe', async () => {
 		subscriptionService.__set__('subscriptions', {
 			'my-channel': [{ id: 1 }],
 		})
@@ -53,7 +54,7 @@ describe('Unsubscribe actions', () => {
 		assert.isTrue(unsubscribe)
 	})
 
-	it('Fail to unsubscribe if not subscribed', async function () {
+	it('Fail to unsubscribe if not subscribed', async () => {
 		const subscribed = subscriptionService.unsubscribe({
 			id: 1,
 		}, 'my-channel')
@@ -61,7 +62,7 @@ describe('Unsubscribe actions', () => {
 		assert.isFalse(subscribed)
 	})
 
-	it('Unsubscribe will remove only current subscription', async function () {
+	it('Unsubscribe will remove only current subscription', async () => {
 		subscriptionService.__set__('subscriptions', {
 			'my-channel':  [{ id: 1 }],
 			'my-channel2': [{ id: 1 }],

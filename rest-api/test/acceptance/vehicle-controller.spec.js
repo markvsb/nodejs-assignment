@@ -1,4 +1,4 @@
-const assert       = require('chai').assert
+const { assert }   = require('chai')
 const supertest    = require('../utils/supertest')
 const mongo        = require('../utils/mongo')
 const VehicleStats = require('../../src/models/VehicleStats.model')
@@ -17,19 +17,15 @@ const simpleVehicle = {
 }
 
 describe('Vehicle list controller', () => {
-	before(async function () {
-		return mongo.prepareDatabase()
-	})
+	before(async () => mongo.prepareDatabase())
 
-	after(async function () {
-		return mongo.closeDatabase()
-	})
+	after(async () => mongo.closeDatabase())
 
 	afterEach(async () => {
 		await VehicleStats.deleteMany({})
 	})
 
-	it('Query vehicles should return a list', async function () {
+	it('Query vehicles should return a list', async () => {
 		await VehicleStats.create({ ...simpleVehicle })
 
 		const res = await supertest.get('/v1/vehicles')
@@ -40,7 +36,7 @@ describe('Vehicle list controller', () => {
 		})
 	})
 
-	it('Query vehicles should list with 2 vehicles', async function () {
+	it('Query vehicles should list with 2 vehicles', async () => {
 		await Promise.all([
 			VehicleStats.create({ ...simpleVehicle, name: 'simple-vehicle' }),
 			VehicleStats.create({ ...simpleVehicle }),
@@ -57,7 +53,7 @@ describe('Vehicle list controller', () => {
 		})
 	})
 
-	it('Query vehicles should return empty list if no vehicles', async function () {
+	it('Query vehicles should return empty list if no vehicles', async () => {
 		const res = await supertest.get('/v1/vehicles')
 
 		assert.equal(res.statusCode, 200)
@@ -68,19 +64,15 @@ describe('Vehicle list controller', () => {
 })
 
 describe('Vehicle stats controller', () => {
-	before(async function () {
-		return mongo.prepareDatabase()
-	})
+	before(async () => mongo.prepareDatabase())
 
-	after(async function () {
-		return mongo.closeDatabase()
-	})
+	after(async () => mongo.closeDatabase())
 
 	afterEach(async () => {
 		await VehicleStats.deleteMany({})
 	})
 
-	it('Query stats should return an object with data', async function () {
+	it('Query stats should return an object with data', async () => {
 		await VehicleStats.create({ ...simpleVehicle, name: 'test-vehicle' })
 
 		const res = await supertest.get('/v1/vehicle/test-vehicle/history')
@@ -102,7 +94,7 @@ describe('Vehicle stats controller', () => {
 		})
 	})
 
-	it('Query vehicles should 404 if no stats available', async function () {
+	it('Query vehicles should 404 if no stats available', async () => {
 		const res = await supertest.get('/v1/vehicle/unknown-vehicle')
 
 		assert.equal(res.statusCode, 404)

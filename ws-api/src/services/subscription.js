@@ -7,7 +7,7 @@ const subscribe = (ws, channel) => {
 	if (!subscriptions[channel]) {
 		subscriptions[channel] = []
 	}
-	if (subscriptions[channel].find(item => item.id === ws.id) === undefined) {
+	if (subscriptions[channel].find((item) => item.id === ws.id) === undefined) {
 		subscriptions[channel].push(ws)
 		return true
 	}
@@ -21,7 +21,7 @@ const unsubscribeFromChannel = (ws, channel = null) => {
 	}
 
 	const subscribersCount = subscriptions[channel].length
-	subscriptions[channel] = subscriptions[channel].filter(item => ws.id !== item.id)
+	subscriptions[channel] = subscriptions[channel].filter((item) => ws.id !== item.id)
 
 	return subscribersCount > subscriptions[channel].length
 }

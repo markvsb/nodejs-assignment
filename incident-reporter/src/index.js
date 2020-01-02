@@ -20,7 +20,7 @@ const incidents = [
 	},
 ]
 
-const checkIncidents = stats => incidents.filter(inc => inc.rule.check(inc.value ? stats[inc.value] : stats))
+const checkIncidents = (stats) => incidents.filter((inc) => inc.rule.check(inc.value ? stats[inc.value] : stats))
 
 const createReport = (msg, subject, triggeredIncidents) => {
 	const [lat, long] = msg.gps.split('|')
@@ -31,23 +31,23 @@ const createReport = (msg, subject, triggeredIncidents) => {
 		gps:       { lat, long },
 		timestamp: new Date(msg.time),
 	}
-	report.incidents  = triggeredIncidents.map(alert => alert.name)
+	report.incidents  = triggeredIncidents.map((alert) => alert.name)
 	report.save().then((doc) => {
 		logger.debug('Report saved successfully', doc)
-	}).catch(err => {
+	}).catch((err) => {
 		logger.error('Unable to save report', err)
 	})
 }
 
 const natsConnection = nats.connect({ url: config.nats.url, json: true })
 
-mongo.then(client => {
+mongo.then(() => {
 	natsConnection.subscribe(NATS_SUBJECT, (msg, _, subject) => {
 		const triggeredIncidents = checkIncidents(msg)
 		if (triggeredIncidents.length > 0) {
 			createReport(msg, subject, triggeredIncidents)
 		}
 	})
-}).catch(err => {
+}).catch((err) => {
 	logger.error('Unable to connect to MongoDB', err)
 })

@@ -1,6 +1,6 @@
 const VehicleStats = require('../models/VehicleStats')
 
-const createFromSimpleObject = function (name, stats) {
+const createFromSimpleObject = (name, stats) => {
 	const geoPoint = stats.gps.split('|')
 	return VehicleStats.create({
 		name,

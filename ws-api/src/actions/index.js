@@ -1,5 +1,5 @@
-const subscribe = require('../services/subscription').subscribe
-const logger    = require('../components/logger')
+const { subscribe } = require('../services/subscription')
+const logger        = require('../components/logger')
 
 module.exports = {
 	exec: (ws, message) => {

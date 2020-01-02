@@ -1,5 +1,5 @@
-import VehicleStats from './containers/VehicleStats'
-import VehicleList from './containers/VehicleList'
+import VehicleStats from './containers/VehicleStats.vue'
+import VehicleList from './containers/VehicleList.vue'
 
 export default [
 	{ name: 'root', path: '/', redirect: { name: 'vehicles' } },

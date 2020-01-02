@@ -1,15 +1,13 @@
-import config from '../config'
 import EventEmitter from 'events'
+import config from '../config'
 
 const RECONNECT_AFTER_MS = 1000
 
-export const createEmitter = () => {
-	return new EventEmitter()
-}
+export const createEmitter = () => new EventEmitter()
 
 export const wsConnect = (wsEmitter) => {
 	const websocket     = new WebSocket(config.websocket.url)
-	websocket.onerror   = function (err) {
+	websocket.onerror   = (err) => {
 		wsEmitter.emit('error', websocket, err)
 		websocket.close()
 	}
