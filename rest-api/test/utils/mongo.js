@@ -5,6 +5,10 @@ let mongoInstance = null
 
 mongoose.Promise = global.Promise
 
+mongoose.connection.on('disconnected', () => {
+	mongoInstance = null
+})
+
 module.exports.prepareDatabase = async () => {
 	if (!mongoInstance) {
 		mongoInstance = await mongoose.connect(config.mongo.dsn, {
@@ -21,6 +25,4 @@ module.exports.prepareDatabase = async () => {
 module.exports.closeDatabase = async () => {
 	await mongoose.connection.dropDatabase()
 	await mongoose.disconnect()
-	mongoInstance = null
-	return mongoInstance
 }

@@ -6,6 +6,10 @@ let mongoInstance = null
 
 mongoose.Promise = global.Promise
 
+mongoose.connection.on('disconnected', () => {
+	mongoInstance = null
+})
+
 if (!mongoInstance) {
 	mongoInstance = mongoose.connect(config.mongo.dsn, {
 		useNewUrlParser:    true,
